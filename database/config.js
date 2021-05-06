@@ -20,7 +20,7 @@ const dbConnection = async () => {
                 useCreateIndex: true
             });
 
-        console.log('db connection');
+        // console.log('db connection');
 
     } catch (error) {
         console.log(error);
@@ -29,6 +29,7 @@ const dbConnection = async () => {
 
 
 };
+
 
 
 

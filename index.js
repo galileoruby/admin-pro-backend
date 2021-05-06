@@ -12,27 +12,25 @@ const { dbConnection } = require('./database/config');
 //crear el servidor express 
 const app = express();
 
+
+//aplicacion de cors
 app.use(cors());
+
+
+//lectura y parseo de body
+app.use(express.json());
+
 
 
 dbConnection();
 
 
+app.use('/api/usuarios', require('./routes/usuarios.routes'));
+app.use('/api/login', require('./routes/auth.routes'));
 
 
-
-
-app.get('/', (req, res) => {
-
-    res.status(200).json({
-        ok: true,
-        msg: 'hola express',
-        msx: 'ola q ase'
-    });
-
-});
 
 app.listen(process.env.PORT, () => {
 
-    console.log('servidor corriendo ', process.env.PORT);
+    // console.log('servidor corriendo ', process.env.PORT);
 });
