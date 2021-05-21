@@ -7,7 +7,8 @@ const { Router } = require('express');
 const { getUsuarios, crearUsuario, putUsuarios, deleteUsuarioById } = require('../controllers/usuario.controller');
 // check is obsoleted
 const { check, body } = require('express-validator');
-const { validarCampos } = require('../middleware/usuarios.validate');
+// const { validarCampos } = require('../middleware/usuarios.validate');
+const { validarCamposGeneric } = require('../middleware/campos.Validate');
 
 
 
@@ -29,7 +30,7 @@ router.post('/',
         body('nombre', 'Nombre es obligatorio').not().isEmpty(),
         body('password', 'Password es obligatorio').not().isEmpty(),
         body('email', 'Email no es valido').isEmail(),
-        validarCampos,
+        validarCamposGeneric,
     ],
     crearUsuario)
 
@@ -40,7 +41,7 @@ router.put('/:id',
         body('nombre', 'Nombre es obligatorio').not().isEmpty(),
         body('email', 'Email es obligatorio').isEmail(),
         body('role', 'Role es obligatorio').not().isEmpty(),
-        validarCampos
+        validarCamposGeneric
     ],
     putUsuarios
 );
