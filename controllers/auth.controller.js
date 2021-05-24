@@ -3,6 +3,11 @@ const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt');
 
+const { serializeError, deserializeError } = require('serialize-error');
+
+
+const { googleVerify } = require('../helpers/google-verify');
+
 const login = async (req, res = response) => {
 
 
@@ -71,6 +76,81 @@ const login = async (req, res = response) => {
 
 
 
+const googleSingIn = async (req, res = response) => {
+
+
+    // 
+    const googleToken = req.body.token;
+
+    let name, picture, email;
+    try {
+        var googleUser = await googleVerify(googleToken);
+
+    } catch (err) {
+
+
+        const serialized = serializeError(err)
+        // console.log(`errror:::serializado ${serialized}`);
+        // console.log(`err:: ${err}`);
+
+        res.status(404).json({
+            ok: false,
+            // msg: 'Token no es correcto',
+            msg:serialized.message
+            // msgx:err
+        });
+
+        return;
+    }
+
+    name = googleUser.name;
+    picture = googleUser.picture;
+    email = googleUser.email;
+
+    console.log(name);
+    console.log(email);
+    console.log(picture);
+
+    const usuarioDb = await Usuario.findOne({ email });
+    let usuario;
+
+    if (!usuarioDb) {
+        usuario = new Usuario({
+            nombre: name,
+            email,
+            password: '@@@',
+            img: picture,
+            google: true
+
+        });
+    } else {
+        //existe usuario
+
+        usuario = usuarioDb;
+        usuario.google = true;
+        // usuario.password='@@@';
+
+    }
+
+    await usuario.save();
+
+
+
+    const token = await generarJWT(usuario.id, usuario.email);
+
+    return res.status(200).json({
+        ok: true,
+        token
+    });
+
+
+
+}
+
+
+
+
 module.exports = {
-    login
+    login,
+    googleSingIn
 }
