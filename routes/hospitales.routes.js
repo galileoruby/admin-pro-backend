@@ -45,6 +45,7 @@ router.post('/',
 router.put('/:id',
     [
         validarJWT,
+        body('nombre', 'Nombre es requerido').notEmpty(),
         validarCamposGeneric
     ],
     putHospital

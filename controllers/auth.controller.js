@@ -96,7 +96,7 @@ const googleSingIn = async (req, res = response) => {
         res.status(404).json({
             ok: false,
             // msg: 'Token no es correcto',
-            msg:serialized.message
+            msg: serialized.message
             // msgx:err
         });
 
@@ -143,7 +143,28 @@ const googleSingIn = async (req, res = response) => {
         token
     });
 
+}
 
+
+
+const renewToken = async (req, res = reponse) => {
+
+    const uid = req.uid;
+
+
+    const usuario = await Usuario.findById( uid );
+
+
+    //generar token JWT
+    const token = await generarJWT(usuario.id, usuario.email);
+
+
+    res.json({
+        ok: true,
+        uid,
+        token
+
+    });
 
 }
 
@@ -152,5 +173,6 @@ const googleSingIn = async (req, res = response) => {
 
 module.exports = {
     login,
-    googleSingIn
+    googleSingIn,
+    renewToken
 }

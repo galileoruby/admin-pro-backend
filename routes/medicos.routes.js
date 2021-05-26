@@ -9,7 +9,7 @@
 const { Router } = require('express');
 
 // check is obsoleted
-const { check, body } = require('express-validator');
+const { check, body, header } = require('express-validator');
 const { validarCamposGeneric } = require('../middleware/campos.Validate');
 const { validarJWT } = require('../middleware/validar-jwt');
 
@@ -47,11 +47,19 @@ router.post('/',
 
 router.put('/:id',
     [
+        body('hospitalId', 'Hospital id debe ser válido').isMongoId(),
+        body('nombre', 'Nombre medico es requerido').notEmpty(),
+        validarCamposGeneric,
+        validarJWT
     ],
     putMedico
 );
 
 router.delete('/:id',
+    [         
+        validarCamposGeneric,
+        validarJWT
+    ],
     deleteMedicoById
 );
 
